@@ -5,9 +5,9 @@
 {% block content %}
 
 <div class="flex-right">
-    <div>
+    <div class="flow-down">
         <h2>Waiting submissions</h2>
-        <table>
+        <table class="submission-table">
             <thead>
                 <tr>
                     <th>Difficulty</th>
@@ -21,9 +21,11 @@
 
             </tbody>
         </table>
-
+    </div>
+    
+    <div class="flex-down">
         <h2>Recent judged submissions</h2>
-        <table>
+        <table class="submission-table">
             <thead>
                 <tr>
                     <th>Difficulty</th>
@@ -32,6 +34,8 @@
                     <th>Submitted at</th>
                     <th>Language</th>
                     <th>Verdict</th>
+                    <th>Score</th>
+                    <th>CPU</th>
                 </tr>
             </thead>
             <tbody id="judged-submissions">

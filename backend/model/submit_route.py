@@ -3,12 +3,14 @@ from flask_login import LoginManager, login_required, current_user
 
 from backend.models import db, User, SubmissionQueue
 from backend.scraping.get_difficulty import get_difficulty
+from backend.data_emit.queue_data import emit_update_queue
+from backend.extensions import socketio
 
-submit = Blueprint('submit', __name__, template_folder='../../frontend/templates')
+submit_bp = Blueprint('submit', __name__, template_folder='../../frontend/templates')
 login_manager = LoginManager()
-login_manager.init_app(submit)
+login_manager.init_app(submit_bp)
 
-@submit.route('/submit', methods=['GET', 'POST'])
+@submit_bp.route('/submit', methods=['GET', 'POST'])
 @login_required
 def show():
     if request.method == 'POST':
@@ -32,6 +34,8 @@ def show():
             user_id=current_user.id,
             problem_difficulty=difficulty
         )
+        
+        emit_update_queue()
 
         flash('Submission successful!', 'success')
         return redirect(url_for('submit.show'))

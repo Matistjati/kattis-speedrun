@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import SocketIO, emit, join_room
 from flask_sqlalchemy import SQLAlchemy
 
+from backend.extensions import socketio
 from backend.model import eventhandler
 import os
 from backend.models import db, User, SpeedRun
@@ -15,18 +16,15 @@ from backend.login.login import login
 from backend.login.register import register
 from backend.login.logout import logout
 from backend.model.submission_queue import submission_queue
-from backend.model.submit import submit
-from backend.data_emit.queue_data import get_queue_emission_data
+from backend.model.submit_route import submit_bp
+from backend.data_emit.queue_data import emit_update_queue
 
-socketio = SocketIO()
 
 def create_app():
     app = Flask(__name__, static_folder="../frontend/static", template_folder="../frontend/templates")
-    app.extensions["socketio"] = socketio
 
     q = eventhandler.EventHandler(app)
     app.queue = q
-    queue_runner = threading.Thread(target=q.run, daemon=True)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     db.init_app(app)
@@ -43,7 +41,7 @@ def create_app():
     login_manager.init_app(app)
     socketio.init_app(app)
 
-    for blueprint in [login, register, submission_queue, submit, logout]:
+    for blueprint in [login, register, submission_queue, submit_bp, logout]:
         app.register_blueprint(blueprint)
 
     @app.cli.command('init_db')
@@ -55,8 +53,6 @@ def create_app():
 
         #add_user
         db.session.commit()
-
-    queue_runner.start()
 
     return app
 
@@ -97,27 +93,16 @@ def debug_db():
 def on_connect():
     print('Client connected')
 
-    if not current_user.is_authenticated:
-        print("User not authenticated")
-        return False
-
-    print(f"User {current_user.username} connected via Socket.IO")
-    join_room(current_user.id)
-
-
 @socketio.on('get_queue_data')
 def get_queue_data():
-    if not current_user.is_authenticated:
-        print("User not authenticated")
-        return False
-
-    print("GIVING QUEUE DATA")
-    emit('queue_data', get_queue_emission_data())
+    print("Serving queue data")
+    emit_update_queue()
 
 
 if __name__ == '__main__':
-    for rule in app.url_map.iter_rules():
-        print(rule)
+    queue_runner = threading.Thread(target=app.queue.run, daemon=True)
+    queue_runner.start()
+
     app.run(
         host='0.0.0.0',
         port=5000,

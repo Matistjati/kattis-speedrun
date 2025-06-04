@@ -5,3 +5,4 @@ Flask-SocketIO
 cryptography
 BeautifulSoup4
 requests
+lxml

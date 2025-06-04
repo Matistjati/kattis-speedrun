@@ -6,8 +6,12 @@ body {
 
 .flex-right {
     display: flex;
+    flex-wrap: nowrap;
+}
+
+.flex-right {
+    display: flex;
     flex-direction: row;
-    justify-content: flex-end;
 }
 
 table {
@@ -55,4 +59,16 @@ p {
     height: 40px;
     width: 40px;
     margin-right: 10px;
+}
+
+.verdict-success {
+    background-color: #39a137;
+}
+
+.verdict-failure {
+    background-color: #ff411a;
+}
+
+.verdict-partial {
+    background-color: #ffbe00;
 }

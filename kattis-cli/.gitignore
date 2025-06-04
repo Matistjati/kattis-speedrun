@@ -1,0 +1,3 @@
+**/*.kattisrc
+**/*.venv
+**/__pycache__

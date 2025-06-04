@@ -12,6 +12,7 @@ db = SQLAlchemy()
 class SpeedRun(db.Model):
     __tablename__ = 'speedrun'
     id            = db.Column(db.Integer, primary_key=True)
+    time_till_next_submission_token = db.Column(db.Integer, default=60, nullable=False)
 
 
 class User(UserMixin, db.Model):
@@ -39,6 +40,21 @@ class Status(Enum):
     ERROR = "Error"
     ACCEPTED = "Accepted"
     REJECTED = "Rejected"
+    JUDGE_ERROR = "Judge Error"
+    COMPILE_ERROR = "Compile Error"
+    RUN_TIME_ERROR = "Run Time Error"
+    MEMORY_LIMIT_EXCEEDED = "Memory Limit Exceeded"
+    OUTPUT_LIMIT_EXCEEDED = "Output Limit Exceeded"
+    TIME_LIMIT_EXCEEDED = "Time Limit Exceeded"
+    ILLEGAL_FUNCTION = "Illegal Function"
+    WRONG_ANSWER = "Wrong Answer"
+
+
+def get_status_name_from_value(value: str) -> str:
+    for status in Status:
+        if status.value == value:
+            return status.name
+    raise ValueError(f"No matching enum member for value: {value}")
 
 class Submission(db.Model):
     __tablename__ = 'submission'
@@ -52,6 +68,8 @@ class Submission(db.Model):
     problem_difficulty = db.Column(db.Float, nullable=False)
     source_code = db.Column(db.Text, nullable=False)
     status = db.Column(db.Enum(Status), default=Status.WAITING, nullable=False)
+    run_time = db.Column(db.Float)
+    score = db.Column(db.Float)
 
     user = db.relationship('User', backref='submissions')
     
