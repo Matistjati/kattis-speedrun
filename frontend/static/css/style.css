@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+.flex-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+table {
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 20px 20px;
+}
+
+table td, table th {
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #d6d6d6;
+}
+
+table th {
+    background-color: #eeeeee;
+    font-weight: bold;
+}
+
+table td {
+    margin: 0px;
+}
+
+p {
+    font-size: 1.2rem;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.navbar img {
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+}

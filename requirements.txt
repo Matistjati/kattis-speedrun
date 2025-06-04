@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-SocketIO
+cryptography
+BeautifulSoup4
+requests

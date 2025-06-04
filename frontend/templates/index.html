@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <title>Kattis Speedrun</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type="module" src="{{ url_for('static', filename='js/token.js') }}" defer></script>
+  </head>
+  <body>
+    <div class="row-layout">
+      <div class="flex-down">
+        <h1>Kattis Speedrun</h1>
+
+        <h2 id="time-remaining-display">Time remaining: xx:xx:xx</h2>
+
+        <!-- Token input UI -->
+        <div id="token-container" style="margin-bottom:20px;">
+          <label for="tokenInput">Your Token:</label>
+          <input type="text" id="tokenInput" placeholder="Enter token…" style="width:300px; margin-left:10px;">
+          <button id="saveToken">Save Token</button>
+        </div>
+
+        <h2><div>Seasons and Cash:<br></h2>
+        <div>Balance: <span id="balance">-</span></div>
+        <div>Rank: <span id="rank">-</span></div>
+        <div>Year: <span id="year">-</span></div>
+        <div>Season: <span id="curr-season">-</span></div>
+        <div>Next season: <span id="next-season">-</span></div>
+        <h2>
+
+        
+        <h2 class="no-margin-bottom no-margin-top">Buy soils</h2>
+        <table id="soils">
+            <thead>
+              <tr>
+                <th>Soil</th>
+                <th>Cost</th>
+                <th>Buy for</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for soil in soils %}
+              <tr>
+                <td>{{soil}}</td>
+                <td id="cost-{{soil.split(' ')[0]}}">$xx.xx</td>
+                <td><input id="qty-{{soil}}" type="number" min="1" style="width: 40px; margin-left: 10px;" value="100">
+                <button id="buy-soil-button" onclick="buySoil('{{soil}}')">Buy</button></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+      <div class="row-wrap">
+        <div class="flex-down">
+          <div>
+            <h3>Weather Forecast:</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Low</th>
+                  <th>High</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Temperature (°C)</td>
+                  <td id="templo">x.xx</td>
+                  <td id="temphi">x.xx</td>
+                </tr>
+                <tr>
+                  <td>Rain (mm)</td>
+                  <td id="rainlo">xxx.xx</td>
+                  <td id="rainhi">xxx.xx</td>
+                </tr>
+                
+            </table>
+          </div>
+
+          
+          <h2 class="no-margin-bottom">Buy seeds</h2>
+          <table id="seeds">
+            <thead>
+              <tr>
+                <th>Crop</th>
+                <th>Cost</th>
+                <th>Buy for</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for crop in crops %}
+              <tr>
+                <td>{{crop}}</td>
+                <td id="cost-{{crop}}">$xx.xx</td>
+                <td><input id="qty-{{crop}}" type="number" min="1" style="width: 60px; margin-left: 10px;" value="100">
+                <button id="buy-crop-button" onclick="buyCrop('{{crop}}')">Buy</button></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3>Inventory</h3>
+          <p>Basic (50/100) means that you have 100 plots of basic soil, of which 50 can be planted on.<br/>First column is how many you own, rest are number planted.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Crop</th>
+                <th>Seeds</th>
+                {% for soil in soils %}
+                  <th id="soil-utilization-{{soil.split(' ')[0]}}">{{ soil.split(' ')[0] }} (0/0)</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for crop in crops %}
+              <tr>
+                  <td>{{ crop }}</td>
+                  <td id="unplanted_{{crop}}">0</td>
+                  {% for soil in soils %}
+                    <td id="planted_{{crop}}_{{soil.split(' ')[0]}}">0</td>
+                  {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex-break"></div>
+
+        <div>
+          <h2 class="no-margin-bottom">Plant Seeds</h2>
+          <ul id="plant_seeds"></ul>
+        </div>
+      </div>
+
+    </div>
+
+      <div>
+        <h3>Planting history</h3>
+        <p>Units: yu = yield unit. Represents amount gotten. s = one soil. m = one money</p>
+        <table id="planted-table">
+          <thead>
+            <tr>
+              <th>Seed</th>
+              <th>Soil</th>
+              <th>Amount</th>
+              <th>Year</th>
+              <th>Season</th>
+              <th>Harvested</th>
+              <th>Yield (yu)</th>
+              <th>Yield unit per soil (yu/s)</th>
+              <th>Total money (m)</th>
+              <th>Money per yield unit (m/yu)</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+
+        </table>
+      </div>
+
+    <button id="logout">Log out</button>
+
+  </body>
+</html>

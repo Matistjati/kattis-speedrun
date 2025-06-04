@@ -1,0 +1,3 @@
+
+def submit_to_kattis():
+    ...

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Session Details{% endblock %}
+
+{% block content %}
+
+<div class="flex-right">
+    <div>
+        <h2>Waiting submissions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Difficulty</th>
+                    <th>Problem</th>
+                    <th>User</th>
+                    <th>Submitted at</th>
+                    <th>Language</th>
+                </tr>
+            </thead>
+            <tbody id="waiting-submissions">
+
+            </tbody>
+        </table>
+
+        <h2>Recent judged submissions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Difficulty</th>
+                    <th>Problem</th>
+                    <th>User</th>
+                    <th>Submitted at</th>
+                    <th>Language</th>
+                    <th>Verdict</th>
+                </tr>
+            </thead>
+            <tbody id="judged-submissions">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module" src="{{ url_for('static', filename='js/queue.js') }}"></script>
+{% endblock %}

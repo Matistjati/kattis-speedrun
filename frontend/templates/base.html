@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Flask App{% endblock %}</title>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('submission_queue.show') }}">Queue</a>
+        <a href="{{ url_for('submit.show') }}">Submit</a>
+        <a href="{{ url_for('login.show') }}">Login</a>
+        <a href="{{ url_for('register.show') }}">Register</a>
+        <a href="{{ url_for('logout.show') }}">Log out</a>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    </main>
+
+</body>
+</html>

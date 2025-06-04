@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Session Details{% endblock %}
+
+{% block content %}
+You are {{ current_user.username }}
+
+<form action="/submit" method="POST" class="submission-form" style="margin-top: 20px;">
+    <div style="margin-bottom: 10px;">
+        <label for="shortname">Shortname:</label><br>
+        <input type="text" id="shortname" name="shortname" maxlength="20" style="width: 150px;">
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <label for="language">Language:</label><br>
+        <select id="language" name="language" style="width: 160px;">
+            <option value="Python 3">Python 3</option>
+            <option value="C++">C++</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <label for="code">Code:</label><br>
+        <textarea id="code" name="code" rows="20" cols="80" style="width: 100%;"></textarea>
+    </div>
+
+    <button type="submit">Submit Code</button>
+</form>
+
+{% endblock %}
