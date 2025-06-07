@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_required, current_user
 
-from backend.models import db, User, SubmissionQueue
+from backend.models import db, User, Submission
 from backend.scraping.get_difficulty import get_difficulty
 from backend.data_emit.queue_data import emit_update_queue
 from backend.extensions import socketio
@@ -27,13 +27,16 @@ def show():
             flash('Invalid problem shortname.', 'error')
             return redirect(url_for('submit.show'))
 
-        submission = SubmissionQueue().add_submission(
+        submission = Submission(
             problem_shortname=shortname,
             language=language,
             source_code=code,
             user_id=current_user.id,
             problem_difficulty=difficulty
         )
+
+        db.session.add(submission)
+        db.session.commit()
         
         emit_update_queue()
 

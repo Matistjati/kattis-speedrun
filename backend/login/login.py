@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, redirect, request
+from flask import Blueprint, url_for, render_template, redirect, request, flash
 from flask_login import LoginManager, login_user
 from werkzeug.security import check_password_hash
 
@@ -21,8 +21,10 @@ def show():
                 login_user(user)
                 return redirect(url_for('submission_queue.show'))
             else:
-                return redirect(url_for('login.show') + '?error=incorrect-password')
+                flash("Incorrect password", "error")
+                return redirect(url_for('login.show'))
         else:
-            return redirect(url_for('login.show') + '?error=user-not-found')
+            flash("User not found", "error")
+            return redirect(url_for('login.show'))
     else:
         return render_template('login.html')

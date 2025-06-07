@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, redirect, request
+from flask import Blueprint, url_for, render_template, redirect, request, flash
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -30,10 +30,13 @@ def show():
                     db.session.commit()
                 except Exception as e:
                     print(e)
-                    return redirect(url_for('register.show') + '?error=user-or-email-exists')
+                    flash("Error creating user: username already exists", "error")
+                    return redirect(url_for('register.show'))
 
-                return redirect(url_for('login.show') + '?success=account-created')
+                flash("Account created successfully!", "success")
+                return redirect(url_for('login.show'))
         else:
-            return redirect(url_for('register.show') + '?error=missing-fields')
+            flash("Please fill in all fields", "error")
+            return redirect(url_for('register.show'))
     else:
         return render_template('register.html')

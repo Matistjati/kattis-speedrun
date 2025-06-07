@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
+{% block title %}Session Details{% endblock %}
 
-<body>
-    <form method="POST" action="/register">
-        <input type="text" name="username" class="form-control" placeholder="Username">
-        <input type="password" name="password" class="form-control" placeholder="Password">
-        <input type="password" name="confirm-password" class="form-control" placeholder="Confirm Password">
-        <p>Already Registered? <a href="/login"> Click Here</a></p>
-        <button type="submit">Register</button>
-    </form>
-</body>
-
-</html>
+{% block content %}
+<form method="POST" action="/register">
+    <input type="text" name="username" class="form-control" placeholder="Username">
+    <input type="password" name="password" class="form-control" placeholder="Password">
+    <input type="password" name="confirm-password" class="form-control" placeholder="Confirm Password">
+    <p>Already Registered? <a href="/login"> Click Here</a></p>
+    <button type="submit">Register</button>
+</form>
+{% endblock %}

@@ -95,13 +95,18 @@ def on_connect():
 
 @socketio.on('get_queue_data')
 def get_queue_data():
-    print("Serving queue data")
     emit_update_queue()
 
 
-if __name__ == '__main__':
+
+def start_judging_thread():
+    print("[main] Starting queue runner")
     queue_runner = threading.Thread(target=app.queue.run, daemon=True)
     queue_runner.start()
+
+if __name__ == '__main__':
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        start_judging_thread()
 
     app.run(
         host='0.0.0.0',

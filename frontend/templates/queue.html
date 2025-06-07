@@ -3,7 +3,7 @@
 {% block title %}Session Details{% endblock %}
 
 {% block content %}
-
+<h2 id="refresh-counter">Time till refresh: -- seconds</h2>
 <div class="flex-right">
     <div class="flow-down">
         <h2>Waiting submissions</h2>
@@ -15,6 +15,7 @@
                     <th>User</th>
                     <th>Submitted at</th>
                     <th>Language</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="waiting-submissions">
@@ -42,6 +43,13 @@
 
             </tbody>
         </table>
+    </div>
+
+    <div class="flex-down">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard">
+
+        </ul>
     </div>
 </div>
 

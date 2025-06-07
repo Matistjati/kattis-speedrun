@@ -14,13 +14,18 @@ def submit_to_kattis(submission: Submission):
         temp_file.close()
 
         # Call the submit function from the submit module
-        print(submission.problem_shortname)
+        print(f"about to judge {submission.problem_shortname}")
         res = submit.submit(submission.problem_shortname, [temp_file.name])
         if not isinstance(res, tuple):
             speed_run = SpeedRun.query.filter_by().first()
             speed_run.time_till_next_submission_token = int(res)
+            db.session.commit()
+            print(f"next token in {res} seconds")
             return False
         else:
+            speed_run = SpeedRun.query.filter_by().first()
+            speed_run.time_till_next_submission_token = -1
+            db.session.commit()
             verdict, cpu_time, score = res
     
     if not len(score):
@@ -34,10 +39,11 @@ def submit_to_kattis(submission: Submission):
     if not len(cpu_time):
         cpu_time = -1
 
-    print(f"{get_status_name_from_value(verdict)=}")
     submission.status = get_status_name_from_value(verdict)
     submission.run_time = cpu_time
     submission.score = score
+    submission.judged = True
+    db.session.add(submission)
     db.session.commit()
     return True
 

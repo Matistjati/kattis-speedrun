@@ -15,6 +15,7 @@ const socket = connectSocket([
                     <td>${element.user_name}</td>
                     <td>${element.submitted_at}</td>
                     <td>${element.language}</td>
+                    <td>${element.status}</td>
                 `;
                 queue_element.appendChild(submission);
             });
@@ -37,6 +38,22 @@ const socket = connectSocket([
 
                 judging_element.appendChild(submission);
             });
+
+            console.log(data["user_scores"]);
+            let leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+
+            data["user_scores"].forEach(([user_name,score]) => {
+                const entry = document.createElement('li');
+                entry.innerText = `${user_name}: ${score}`;
+                leaderboard.appendChild(entry);
+            });
+
+            let refresh_counter = document.getElementById('refresh-counter');
+            console.log(refresh_counter)
+            console.log(data)
+            if (data["token_refresh"] < 0) refresh_counter.innerHTML = 'At least one token available';
+            else refresh_counter.innerHTML = `Time till refresh: ${data["token_refresh"]} seconds`;
 
             console.log('Queue update:', data);
         }]
