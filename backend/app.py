@@ -17,6 +17,7 @@ from backend.login.register import register
 from backend.login.logout import logout
 from backend.model.submission_queue import submission_queue
 from backend.model.submit_route import submit_bp
+from backend.login.discord_id import discord
 from backend.data_emit.queue_data import emit_update_queue
 
 
@@ -41,7 +42,7 @@ def create_app():
     login_manager.init_app(app)
     socketio.init_app(app)
 
-    for blueprint in [login, register, submission_queue, submit_bp, logout]:
+    for blueprint in [login, register, submission_queue, submit_bp, logout, discord]:
         app.register_blueprint(blueprint)
 
     @app.cli.command('init_db')

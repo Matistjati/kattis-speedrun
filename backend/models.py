@@ -20,8 +20,8 @@ class User(UserMixin, db.Model):
     id            = db.Column(db.Integer, primary_key=True)
     username      = db.Column(db.String(64), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
-    token = db.Column(db.String(120), unique=True, nullable=True)
     last_login = db.Column(db.DateTime, nullable=True)
+    discord_id = db.Column(db.String(64), unique=True, nullable=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -29,9 +29,6 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_token(self):
-        self.token = secrets.token_urlsafe(32)
-        return self.token
 
 
 class Status(Enum):

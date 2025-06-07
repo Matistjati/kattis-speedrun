@@ -2,9 +2,10 @@ from queue import PriorityQueue
 import time
 import threading
 
-from backend.models import get_top_submission, Status, db, SpeedRun
+from backend.models import get_top_submission, Status, db, SpeedRun, Submission, User
 from backend.model.make_submission import submit_to_kattis
 from backend.data_emit.queue_data import emit_update_queue
+from backend.model.notify_user import ping_user
 
 class EventHandler:
     def __init__(self, app):
@@ -22,6 +23,11 @@ class EventHandler:
                     if not submit_to_kattis(submission=sub):
                         sub.status = Status.WAITING
                         db.session.commit()
+                    else:
+                        sub = Submission.query.get(sub.id)
+                        user: User = User.query.get(sub.user_id)
+                        if user.discord_id:
+                            ping_user(user.discord_id, sub.problem_shortname, sub.status.value)
                     emit_update_queue()
                     last_judged_time = time.time()
                 else:

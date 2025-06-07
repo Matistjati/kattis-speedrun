@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Session Details{% endblock %}
+
+{% block content %}
+<form method="POST" action="/discord">
+    <input type="text" name="discord_id" class="form-control" placeholder="Discord id">
+    <button type="submit">Set</button>
+</form>
+{% endblock %}
