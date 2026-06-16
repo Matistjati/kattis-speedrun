@@ -46,16 +46,16 @@ Deployed on the `po` host (`webmaster@37.152.61.245`, alias `po` in `~/.bashrc`)
   (auto-renew); HTTP→HTTPS redirect. HTTPS is required because `SESSION_COOKIE_SECURE=True`.
 - **Kattis auth:** `.kattisrc` lives in the **project root** (the service's cwd) on the
   server, not `~`. `submit.py`'s `get_config()` checks cwd first; `.kattisrc` is gitignored.
-- **Redeploy after code changes:**
+- **Deploy is git-based.** The server dir is a clone tracking `origin/master`. Commit +
+  push, then run the deploy script on the host (uses your forwarded SSH agent — go through
+  the `po` alias, which is `ssh -A`):
   ```bash
-  rsync -az --delete --exclude '.git/' --exclude 'instance/' --exclude '__pycache__/' \
-    --exclude '*.pyc' --exclude 'venv/' --exclude '.kattisrc' \
-    -e 'ssh -A' ./ webmaster@37.152.61.245:~/dev/kattis-speedrun/
-  ssh -A webmaster@37.152.61.245 'sudo systemctl restart kattis-speedrun'
+  git push origin master
+  ssh -A po 'cd ~/dev/kattis-speedrun && ./deploy.sh'
   ```
-  `instance/` and `.kattisrc` are excluded so the live DB / secret key / token are never
-  clobbered. If `requirements.txt` changed, also run
-  `~/dev/kattis-speedrun/venv/bin/pip install -r requirements.txt` before restarting.
+  `deploy.sh` does `git pull --ff-only`, `pip install -r requirements.txt` into the venv,
+  and `sudo systemctl restart kattis-speedrun`. `instance/` (DB + secret key) and
+  `.kattisrc` are gitignored, so the pull never touches the live DB or the Kattis token.
 - **Sync the DB up** (overwrites the server's, e.g. seeding from local): stop the service
   first for a clean SQLite copy —
   `sudo systemctl stop kattis-speedrun`, `rsync instance/app.db …:~/dev/kattis-speedrun/instance/app.db`,
