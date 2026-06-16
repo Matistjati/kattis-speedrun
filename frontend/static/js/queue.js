@@ -13,8 +13,7 @@ const socket = connectSocket([
                     <td>${element.problem_difficulty}</td>
                     <td>${element.problem_shortname}</td>
                     <td>${element.user_name}</td>
-                    <td>${element.submitted_at}</td>
-                    <td>${element.language}</td>
+                    <td class="col-time">${element.submitted_at}</td>
                     <td>${element.status}</td>
                 `;
                 queue_element.appendChild(submission);
@@ -22,12 +21,14 @@ const socket = connectSocket([
 
             data["judged"].forEach(element => {
                 const submission = document.createElement('tr');
+                const problem_cell = element.kattis_url
+                    ? `<a href="${element.kattis_url}" target="_blank" rel="noopener">${element.problem_shortname}</a>`
+                    : element.problem_shortname;
                 submission.innerHTML = `
                     <td>${element.problem_difficulty}</td>
-                    <td>${element.problem_shortname}</td>
+                    <td>${problem_cell}</td>
                     <td>${element.user_name}</td>
-                    <td>${element.submitted_at}</td>
-                    <td>${element.language}</td>
+                    <td class="col-time">${element.submitted_at}</td>
                     <td>${element.verdict}</td>
                     <td>${element.score}</td>
                     <td>${element.run_time}</td>
@@ -45,7 +46,7 @@ const socket = connectSocket([
 
             data["user_scores"].forEach(([user_name,score]) => {
                 const entry = document.createElement('li');
-                entry.innerText = `${user_name}: ${score}`;
+                entry.innerHTML = `<span class="lb-name">${user_name}</span><span class="lb-score">${Number(score).toFixed(1)}</span>`;
                 leaderboard.appendChild(entry);
             });
 

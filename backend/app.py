@@ -4,7 +4,6 @@ import threading
 
 from flask import Flask, request, jsonify, make_response, redirect, url_for, render_template
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import SocketIO, emit, join_room
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,12 +12,32 @@ from backend.model import eventhandler
 import os
 from backend.models import db, User, SpeedRun
 from backend.login.login import login
-from backend.login.register import register
 from backend.login.logout import logout
 from backend.model.submission_queue import submission_queue
 from backend.model.submit_route import submit_bp
-from backend.login.discord_id import discord
+from backend.model.shortest_unsolved import shortest_unsolved
 from backend.data_emit.queue_data import emit_update_queue
+
+
+def load_secret_key(app):
+    """Return a SECRET_KEY that is stable across restarts so that active
+    sessions survive a server reload (otherwise every reload logs everyone
+    out). Prefers the SECRET_KEY env var, then a persisted file in the
+    instance folder, generating one on first run."""
+    env_key = os.environ.get('SECRET_KEY')
+    if env_key:
+        return env_key
+
+    os.makedirs(app.instance_path, exist_ok=True)
+    key_path = os.path.join(app.instance_path, 'secret_key')
+    if os.path.exists(key_path):
+        with open(key_path, 'r') as f:
+            return f.read().strip()
+
+    key = secrets.token_hex(32)
+    with open(key_path, 'w') as f:
+        f.write(key)
+    return key
 
 
 def create_app():
@@ -29,7 +48,7 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     db.init_app(app)
-    app.config['SECRET_KEY'] = secrets.token_hex(32)
+    app.config['SECRET_KEY'] = load_secret_key(app)
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SESSION_COOKIE_SECURE'] = True
@@ -42,7 +61,7 @@ def create_app():
     login_manager.init_app(app)
     socketio.init_app(app)
 
-    for blueprint in [login, register, submission_queue, submit_bp, logout, discord]:
+    for blueprint in [login, submission_queue, submit_bp, shortest_unsolved, logout]:
         app.register_blueprint(blueprint)
 
     @app.cli.command('init_db')
@@ -62,6 +81,10 @@ app = create_app()
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/debug/db')
 def debug_db():

@@ -130,7 +130,8 @@ def get_config():
     except NameError:
         file = sys.argv[0]
 
-    if not cfg.read([os.path.join(os.path.expanduser("~"), '.kattisrc'),
+    if not cfg.read([os.path.join(os.getcwd(), '.kattisrc'),
+                     os.path.join(os.path.expanduser("~"), '.kattisrc'),
                      os.path.join(os.path.dirname(file), '.kattisrc'),
                      os.path.join(os.path.dirname(os.path.realpath(file)), '.kattisrc')]):
         raise ConfigError('''\
@@ -473,4 +474,6 @@ extension "{ext}"''')
         if not res:
             sys.exit(1)
         print(f"{res=}")
-        return res
+        m = re.search(r'Submission ID: (\d+)', plain_result)
+        kattis_submission_id = int(m.group(1)) if m else None
+        return res + (kattis_submission_id,)

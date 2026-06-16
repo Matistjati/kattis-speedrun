@@ -1,58 +1,88 @@
+/* Kattis-inspired theme.
+   Palette + fonts taken from open.kattis.com:
+   brand gold #ffbe00, success #39a137, error #ff411a, partial pales,
+   body font Ubuntu, headings Merriweather, 7px gold branding bar. */
+
+:root {
+    --kattis-gold:        #ffbe00;
+    --kattis-green:       #39a137;
+    --kattis-green-hover: #59b057;
+    --link:               #355591;
+    --text:               #1c1c1c;
+    --muted:              #666;
+    --border:             #e3e3ea;
+    --panel:              #ffffff;
+    --header-bg:          #2b2b32;
+    --bg-start:           #f1f2fc;
+    --bg-end:             #f7f7f7;
+    --success-pale:       #d6f3d2;
+    --error-pale:         #ffd0cc;
+    --warning-pale:       #ffe699;
+    --radius:             8px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
-    margin-bottom: 10px;
     padding: 0;
+    min-height: 100vh;
+    border-top: 7px solid var(--kattis-gold);
+    background-image: linear-gradient(143deg, var(--bg-start) 22%, var(--bg-end) 75%);
+    background-attachment: fixed;
+    font-family: "Ubuntu", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
 }
 
-.flex-right {
-    display: flex;
-    flex-wrap: nowrap;
+h1, h2, h3 {
+    font-family: "Merriweather", Georgia, "Times New Roman", serif;
+    color: #222;
+    font-weight: 700;
+    line-height: 1.25;
 }
 
-.flex-right {
-    display: flex;
-    flex-direction: row;
-}
+h1 { font-size: 2rem; margin: 0 0 16px; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.1rem; }
 
-table {
-    border-collapse: collapse;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    margin: 20px 20px;
-}
+p { margin: 0 0 12px; }
 
-table td, table th {
-    text-align: left;
-    padding: 12px;
-    border: 1px solid #d6d6d6;
-}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-table th {
-    background-color: #eeeeee;
-    font-weight: bold;
-}
-
-table td {
-    margin: 0px;
-}
-
-p {
-    font-size: 1.2rem;
-}
-
+/* ── Navbar ─────────────────────────────────────────── */
 .navbar {
     display: flex;
     flex-direction: row;
-    position: relative;
-    background-color: #333;
-    color: white;
-    padding: 10px;
+    align-items: center;
+    gap: 2px;
+    background-color: var(--header-bg);
+    padding: 0 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .navbar a {
-    color: white;
+    color: #fff;
     text-decoration: none;
-    padding: 10px 15px;
+    padding: 16px 16px;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: color .15s, border-color .15s;
+}
+
+.navbar a:hover {
+    color: var(--kattis-gold);
+    text-decoration: none;
+    border-bottom-color: var(--kattis-gold);
 }
 
 .navbar img {
@@ -61,14 +91,294 @@ p {
     margin-right: 10px;
 }
 
-.verdict-success {
-    background-color: #39a137;
+/* ── Main content panel ─────────────────────────────── */
+main {
+    display: block;
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 24px 28px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-.verdict-failure {
-    background-color: #ff411a;
+/* ── Queue layout: each section stacked full-width ──── */
+.queue-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 16px;
 }
 
-.verdict-partial {
-    background-color: #ffbe00;
+.queue-section { min-width: 0; }
+
+/* Waiting + recent sit side by side; they wrap to stack on narrow screens. */
+.queue-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+}
+
+.queue-row .queue-section {
+    flex: 1 1 360px;
+    overflow-x: auto;
+}
+
+/* Leaderboard is a narrow list — keep it from stretching across the panel. */
+.leaderboard-section #leaderboard {
+    max-width: 480px;
+}
+
+/* ── Tables ─────────────────────────────────────────── */
+table {
+    border-collapse: collapse;
+    font-family: "Ubuntu", sans-serif;
+    font-size: 14px;
+    width: 100%;
+    margin: 12px 0 20px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+table td, table th {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Submission tables: let long problem slugs / usernames wrap rather than
+   forcing the table wider than the page. */
+.submission-table td, .submission-table th {
+    overflow-wrap: anywhere;
+}
+
+.submission-table .col-time {
+    white-space: nowrap;
+}
+
+table th {
+    background-color: #f3f3f9;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 2px solid #e0e0e8;
+}
+
+table tbody tr:nth-child(even) { background-color: #fafafb; }
+table tbody tr:hover { background-color: #fff7e0; }
+table tbody tr:last-child td { border-bottom: none; }
+
+/* ── Verdict rows (classes set in queue.js) ─────────── */
+.verdict-success td { background-color: var(--success-pale); }
+.verdict-failure td { background-color: var(--error-pale); }
+.verdict-partial td { background-color: var(--warning-pale); }
+.verdict-success:hover td { background-color: #c4ecbe; }
+.verdict-failure:hover td { background-color: #ffbdb6; }
+.verdict-partial:hover td { background-color: #ffdb73; }
+
+/* ── Buttons ────────────────────────────────────────── */
+button, .button, input[type="submit"] {
+    font-family: "Ubuntu", sans-serif;
+    display: inline-block;
+    cursor: pointer;
+    background-color: var(--kattis-green);
+    color: #fff;
+    border: none;
+    border-radius: 20.5px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.33;
+    transition: background-color .15s;
+}
+
+button:hover, .button:hover, input[type="submit"]:hover {
+    background-color: var(--kattis-green-hover);
+}
+
+button:disabled { opacity: .5; cursor: default; }
+
+/* ── Form fields ────────────────────────────────────── */
+label { font-weight: 500; }
+
+input[type="text"], input[type="file"], select, textarea, .form-control {
+    font-family: "Ubuntu", sans-serif;
+    font-size: 1rem;
+    padding: 8px 10px;
+    border: 1px solid #cacaca;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+}
+
+input[type="text"]:focus, select:focus, textarea:focus, .form-control:focus {
+    outline: none;
+    border-color: var(--kattis-green);
+    box-shadow: 0 0 0 3px rgba(57, 161, 55, 0.15);
+}
+
+textarea {
+    font-family: "Ubuntu Mono", ui-monospace, monospace;
+}
+
+.submission-form { max-width: 760px; }
+
+/* ── Login form ─────────────────────────────────────── */
+form[action="/login"] {
+    display: flex;
+    gap: 10px;
+    max-width: 420px;
+    margin-top: 16px;
+}
+
+form[action="/login"] .form-control { flex: 1; }
+
+/* ── Home page ──────────────────────────────────────── */
+.home-links {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+}
+
+.home-links li { margin: 8px 0; }
+
+.home-links a {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #f3f3f9;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.home-links a:hover {
+    background: #fff7e0;
+    border-color: var(--kattis-gold);
+    text-decoration: none;
+}
+
+/* ── Drag & drop upload ─────────────────────────────── */
+.dropzone {
+    border: 2px dashed #cacaca;
+    border-radius: var(--radius);
+    padding: 22px;
+    text-align: center;
+    color: var(--muted);
+    background-color: #fafafb;
+    transition: border-color .15s, background-color .15s;
+}
+
+.dropzone.dragover {
+    border-color: var(--kattis-green);
+    background-color: #eef9ee;
+}
+
+.file-list {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #333;
+    word-break: break-all;
+}
+
+/* ── Leaderboard ────────────────────────────────────── */
+#leaderboard {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+    min-width: 220px;
+    counter-reset: rank;
+}
+
+#leaderboard li {
+    counter-increment: rank;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+#leaderboard .lb-score {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+#leaderboard li::before {
+    content: "#" counter(rank) "  ";
+    color: var(--muted);
+    font-weight: 700;
+}
+
+#leaderboard li:nth-child(1) { border-left-color: #ffd700; }  /* gold   */
+#leaderboard li:nth-child(2) { border-left-color: #c0c0c0; }  /* silver */
+#leaderboard li:nth-child(3) { border-left-color: #cd7f32; }  /* bronze */
+
+/* ── Refresh counter / banner ───────────────────────── */
+#refresh-counter {
+    font-family: "Ubuntu", sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    background: #fff7e0;
+    border: 1px solid var(--kattis-gold);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: inline-block;
+}
+
+/* ── "Lock in" cat (fixed bottom-right of the queue page) ── */
+.lock-in-gif {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: 160px;
+    height: auto;
+    z-index: 100;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+}
+
+.lock-in-seal {
+    right: 192px;
+}
+
+.lock-in-3 {
+    right: 368px;
+}
+
+.lock-in-winston {
+    right: 544px;
+}
+
+.lock-in-pufferfish {
+    right: 720px;
+}
+
+.lock-in-standing-cat {
+    right: 896px;
+}
+
+/* ── Flash messages ─────────────────────────────────── */
+.flashes {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+}
+
+.flashes li {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: var(--warning-pale);
+    border: 1px solid var(--kattis-gold);
 }

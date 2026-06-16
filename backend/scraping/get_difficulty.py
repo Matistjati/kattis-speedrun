@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
+import re
 
-def get_difficulty(shortname: str) -> str:
+def get_difficulty(shortname: str) -> float:
     try:
         url = f"https://open.kattis.com/problems/{shortname}"
         response = requests.get(url)
@@ -9,7 +10,12 @@ def get_difficulty(shortname: str) -> str:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         diff_element = soup.find('span', class_='difficulty_number')
-        return float(diff_element.text.strip())
+        # The difficulty can be a single value ("3.4") or a range ("1.7 - 1.9").
+        # Pull out every number and take the max for ranges.
+        numbers = [float(n) for n in re.findall(r'\d+(?:\.\d+)?', diff_element.text)]
+        if not numbers:
+            return None
+        return max(numbers)
     except requests.RequestException as e:
         print(f"Error fetching URL {url}: {e}")
         return None

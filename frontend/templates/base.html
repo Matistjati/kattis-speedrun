@@ -2,18 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Flask App{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Kattis Speedrun{% endblock %}</title>
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono&display=swap">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <nav class="navbar">
         <a href="{{ url_for('submission_queue.show') }}">Queue</a>
         <a href="{{ url_for('submit.show') }}">Submit</a>
-        <a href="{{ url_for('login.show') }}">Login</a>
-        <a href="{{ url_for('register.show') }}">Register</a>
+        <a href="{{ url_for('shortest_unsolved.show') }}">Shortest unsolved</a>
+        {% if current_user.is_authenticated %}
         <a href="{{ url_for('logout.show') }}">Log out</a>
-        <a href="{{ url_for('discord.show') }}">Discord id</a>
+        {% else %}
+        <a href="{{ url_for('login.show') }}">Login</a>
+        {% endif %}
     </nav>
 
     <main>
@@ -29,6 +35,13 @@
         {% endif %}
         {% endwith %}
     </main>
+
+    <img class="lock-in-gif" src="{{ url_for('static', filename='img/lock-in-silly-cat.gif') }}" alt="Lock in">
+    <img class="lock-in-gif lock-in-seal" src="{{ url_for('static', filename='img/seal.gif') }}" alt="Lock in">
+    <img class="lock-in-gif lock-in-3" src="{{ url_for('static', filename='img/lock-in-3.gif') }}" alt="Lock in">
+    <img class="lock-in-gif lock-in-winston" src="{{ url_for('static', filename='img/winston-cat.gif') }}" alt="Lock in">
+    <img class="lock-in-gif lock-in-pufferfish" src="{{ url_for('static', filename='img/pufferfish-cat.gif') }}" alt="Lock in">
+    <img class="lock-in-gif lock-in-standing-cat" src="{{ url_for('static', filename='img/standing-cat.gif') }}" alt="Lock in">
 
 </body>
 </html>

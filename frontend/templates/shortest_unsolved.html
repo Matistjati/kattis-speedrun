@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Shortest Unsolved{% endblock %}
+
+{% block content %}
+<section class="queue-section">
+    <h2>20 shortest unsolved problems</h2>
+    <table class="submission-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Problem</th>
+                <th>Difficulty</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in problems %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.name }}</a></td>
+                <td>{{ p.difficulty }}</td>
+                <td>{{ p.length_chars }} chars</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

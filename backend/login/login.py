@@ -1,6 +1,5 @@
 from flask import Blueprint, url_for, render_template, redirect, request, flash
 from flask_login import LoginManager, login_user
-from werkzeug.security import check_password_hash
 
 from backend.models import db, User
 
@@ -12,19 +11,18 @@ login_manager.init_app(login)
 def show():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']
+
+        if not username:
+            flash("Please enter a username", "error")
+            return redirect(url_for('login.show'))
 
         user = User.query.filter_by(username=username).first()
+        if not user:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
 
-        if user:
-            if check_password_hash(user.password_hash, password):
-                login_user(user)
-                return redirect(url_for('submission_queue.show'))
-            else:
-                flash("Incorrect password", "error")
-                return redirect(url_for('login.show'))
-        else:
-            flash("User not found", "error")
-            return redirect(url_for('login.show'))
+        login_user(user)
+        return redirect(url_for('submission_queue.show'))
     else:
         return render_template('login.html')

@@ -2,20 +2,30 @@ from backend.models import User, Submission, Status, SpeedRun, db
 from backend.extensions import socketio
 from sqlalchemy import func, select
 from sqlalchemy.orm import aliased
+from datetime import timezone
+from zoneinfo import ZoneInfo
+
+STOCKHOLM = ZoneInfo("Europe/Stockholm")
+
+def _local_time(dt):
+    """Submission times are stored naive-UTC; render them in Stockholm time."""
+    return dt.replace(tzinfo=timezone.utc).astimezone(STOCKHOLM).strftime("%H:%M:%S")
 
 def get_queue_emission_data():
     data = {
         "pending": [],
         "judged": []
     }
-    queued_submissions = Submission.query.filter(Submission.judged==False).order_by(Submission.problem_difficulty).limit(10).all()
+    # Display (and the worker) process hardest-first, so keep the 10 *hardest*
+    # pending submissions — ordering ascending here would drop the hard ones.
+    queued_submissions = Submission.query.filter(Submission.judged==False).order_by(Submission.problem_difficulty.desc()).limit(10).all()
 
     for submission in queued_submissions:
         sub = {
             "problem_shortname": submission.problem_shortname,
             "language": submission.language,
             "user_name": User.query.get(submission.user_id).username,
-            "submitted_at": submission.time.strftime("%d. %H:%M:%S"),
+            "submitted_at": _local_time(submission.time),
             "problem_difficulty": submission.problem_difficulty,
             "status": submission.status.value,
         }
@@ -27,11 +37,15 @@ def get_queue_emission_data():
             "problem_shortname": submission.problem_shortname,
             "language": submission.language,
             "user_name": User.query.get(submission.user_id).username,
-            "submitted_at": submission.time.strftime("%d. %H:%M:%S"),
+            "submitted_at": _local_time(submission.time),
             "problem_difficulty": submission.problem_difficulty,
             "verdict": submission.status.value,
             "run_time": submission.run_time,
             "score": submission.score,
+            "kattis_url": (
+                f"https://open.kattis.com/submissions/{submission.submission_id}"
+                if submission.submission_id else None
+            ),
         }
         data["judged"].append(sub)
 

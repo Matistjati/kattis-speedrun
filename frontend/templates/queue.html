@@ -4,8 +4,9 @@
 
 {% block content %}
 <h2 id="refresh-counter">Time till refresh: -- seconds</h2>
-<div class="flex-right">
-    <div class="flow-down">
+<div class="queue-layout">
+    <div class="queue-row">
+    <section class="queue-section">
         <h2>Waiting submissions</h2>
         <table class="submission-table">
             <thead>
@@ -13,8 +14,7 @@
                     <th>Difficulty</th>
                     <th>Problem</th>
                     <th>User</th>
-                    <th>Submitted at</th>
-                    <th>Language</th>
+                    <th>Submitted</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -22,9 +22,9 @@
 
             </tbody>
         </table>
-    </div>
-    
-    <div class="flex-down">
+    </section>
+
+    <section class="queue-section">
         <h2>Recent judged submissions</h2>
         <table class="submission-table">
             <thead>
@@ -32,8 +32,7 @@
                     <th>Difficulty</th>
                     <th>Problem</th>
                     <th>User</th>
-                    <th>Submitted at</th>
-                    <th>Language</th>
+                    <th>Submitted</th>
                     <th>Verdict</th>
                     <th>Score</th>
                     <th>CPU</th>
@@ -43,14 +42,15 @@
 
             </tbody>
         </table>
+    </section>
     </div>
 
-    <div class="flex-down">
+    <section class="queue-section leaderboard-section">
         <h2>Leaderboard</h2>
         <ul id="leaderboard">
 
         </ul>
-    </div>
+    </section>
 </div>
 
 <script type="module" src="{{ url_for('static', filename='js/queue.js') }}"></script>
