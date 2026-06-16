@@ -372,12 +372,15 @@ form[action="/login"] .form-control { flex: 1; }
     right: 1072px;
 }
 
+/* Second row, stacked above the first (the bottom row was getting too wide). */
 .lock-in-cat-tongue {
-    right: 1248px;
+    right: 16px;
+    bottom: 208px;
 }
 
 .lock-in-happy-cat {
-    right: 1424px;
+    right: 192px;
+    bottom: 208px;
 }
 
 /* ── Flash messages ─────────────────────────────────── */
