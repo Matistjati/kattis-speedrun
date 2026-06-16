@@ -383,6 +383,11 @@ form[action="/login"] .form-control { flex: 1; }
     bottom: 168px;
 }
 
+.lock-in-streamer {
+    right: 368px;
+    bottom: 208px;
+}
+
 /* ── Flash messages ─────────────────────────────────── */
 .flashes {
     list-style: none;
