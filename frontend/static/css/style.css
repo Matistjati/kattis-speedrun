@@ -372,6 +372,10 @@ form[action="/login"] .form-control { flex: 1; }
     right: 1072px;
 }
 
+.lock-in-cat-tongue {
+    right: 1248px;
+}
+
 /* ── Flash messages ─────────────────────────────────── */
 .flashes {
     list-style: none;
